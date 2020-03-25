@@ -2,16 +2,28 @@ CREATE DATABASE checkitout;
 
  USE checkitout;
 
- CREATE TABLE item (id VARCHAR(36), name VARCHAR(36), PRIMARY KEY (id));
+ 
+CREATE TABLE item (id VARCHAR(36), name VARCHAR(36), PRIMARY KEY (id));
 
- CREATE TABLE store (id VARCHAR(36), name VARCHAR(36), PRIMARY KEY(id));
+CREATE TABLE store (id VARCHAR(36), name VARCHAR(36), PRIMARY KEY(id));
 
- CREATE TABLE item_store (id VARCHAR(36), 
+CREATE TABLE location (postcode VARCHAR(10), PRIMARY KEY(postcode));
+
+CREATE TABLE store_location (storeid VARCHAR(36),
+                            postcode VARCHAR(10),
+PRIMARY KEY (storeid, postcode),
+FOREIGN KEY (postcode) REFERENCES location(postcode),
+FOREIGN KEY (storeid) REFERENCES store(id)
+);
+
+ CREATE TABLE item_store_location (id VARCHAR(36), 
                             itemid VARCHAR(36),
                             storeid VARCHAR(36),
+                            postcode VARCHAR(10),
                             quantity  VARCHAR(1),
-                            datecreated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,                        
+                            dateupdated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,                        
 PRIMARY KEY (id),
+FOREIGN KEY (postcode) REFERENCES location(postcode),
 FOREIGN KEY (itemid) REFERENCES item(id),
 FOREIGN KEY (storeid) REFERENCES store(id)
 );
@@ -36,32 +48,63 @@ FOREIGN KEY (storeid) REFERENCES store(id)
   INSERT INTO item (id, name)
   VALUES("2","Hand Sanitiser");
 
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("1","1","1","L");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("2","1","2","S");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("3","1","3","N");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("4","1","4","N");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("5","1","5","S");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("6","1","6","L");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("7","1","7","N");
+  INSERT INTO location (postcode)
+  VALUES ("M33");
+  INSERT INTO location (postcode)
+  VALUES ("M32");
 
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("8","2","1","L");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("9","2","2","N");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("10","2","3","N");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("11","2","4","S");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("12","2","5","S");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("13","2","6","L");
-  INSERT INTO item_store (id, itemid, storeid, quantity)
-  VALUES ("14","2","7","L");
+INSERT INTO store_location (storeid, postcode)
+VALUES ("1","M33");
+INSERT INTO store_location (storeid, postcode)
+VALUES ("2","M33");
+INSERT INTO store_location (storeid, postcode)
+VALUES ("3","M33");
+INSERT INTO store_location (storeid, postcode)
+VALUES ("4","M33");
+INSERT INTO store_location (storeid, postcode)
+VALUES ("5","M33");
+INSERT INTO store_location (storeid, postcode)
+VALUES ("6","M33");
+INSERT INTO store_location (storeid, postcode)
+VALUES ("7","M33");
+
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("1","1","1","M33","L");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("2","1","2","M33","S");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("3","1","3","M33","N");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("4","1","4","M33","N");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("5","1","5","M33","S");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("6","1","6","M33","L");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("7","1","7","M33","N");
+
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("8","2","1","M33","L");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("9","2","2","M33","N");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("10","2","3","M33","N");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("11","2","4","M33","S");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("12","2","5","M33","S");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("13","2","6","M33","L");
+  INSERT INTO item_store_location (id, itemid, storeid, postcode, quantity)
+  VALUES ("14","2","7","M33","L");
+
+
+SELECT DATE_FORMAT(dateupdated,"%d %M %H:%i") AS formatted_date FROM item_store_location;
+
+
+SELECT store.name, item_store_location.quantity, item_store_location.dateupdated
+FROM item_store_location 
+INNER JOIN store ON item_store_location.storeid=store.id
+WHERE item_store_location.itemid = "1" AND item_store_location.postcode="M33";
+
+
