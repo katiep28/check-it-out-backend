@@ -18,30 +18,54 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
+itemname
 
-app.get("/itemstatus/:item", function(req, res) {
+app.get("/itemname", function(req, res) {
+  console.log("Hello");
+    connection.query("SELECT name FROM item ",
+                    function(err, data) {
+      if (err) {
+        console.log("Error fetching items", err);
+        res.status(500).json({
+          error: err
+        });
+      } else {
+        res.json({
+          itemlist: data
+        });
+      }
+    });
+  
+  });
+  
 
-const item = req.params.ite,;
+app.get("/itemstatus/:itemid/:location", function(req, res) {
 
-  // connection.query("SELECT id, name FROM cocktail " +
-  //                  "WHERE name = ?",
-  //                  [name],
-  //                 function(err, data) {
-  //   if (err) {
-  //     console.log("Error fetching item", err);
-  //     res.status(500).json({
-  //       error: err
-  //     });
-  //   } else {
-  //     res.json({
-  //       itemlist: data
-  //     });
-  //   }
-  // });
+const itemid = req.params.itemid;
+const location = req.params.location;
 
-});
-
-
+  connection.query("SELECT store.name, " +
+                          "item_store_location.quantity, " +
+                          "item_store_location.dateupdated " +
+                   "FROM item_store_location " + 
+                   "INNER JOIN store ON item_store_location.storeid=store.id " +
+                   "WHERE item_store_location.itemid = ? "+
+                   "AND item_store_location.postcode= ?"
+                [itemid, location],
+                function(err, data) {
+                  if (err) {
+                      console.log("Error fetching item", err);
+                      res.status(500).json({
+                        error: err
+                      }); 
+                  }
+                  else {
+                      res.json({
+                        itemStatusList: data
+                      });
+                  }
+                  });
+          });
 
 
 // app.post("/addstatus/:item/:store/:status", function(req, res) {

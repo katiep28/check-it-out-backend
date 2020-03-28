@@ -1,7 +1,4 @@
-
-
 service: check-it-out-backend
-
 
 provider:
   name: aws
@@ -9,20 +6,22 @@ provider:
   region: eu-west-2
 
 functions:
-  hello:
+  checkitout:
     handler: handler.checkitout
-
- environment:
+    environment:
       DB_HOST: ${opt:DB_HOST}
       DB_USER: ${opt:DB_USER}
       DB_PASSWORD: ${opt:DB_PASSWORD}
-
-  events:
+    events:
       - http:
-          path: itemstatus/{item}
+          path: itemname
           method: get
           cors: true
       - http:
-          path: addstatus/{item}/{store}/{status}
-          method: post
+          path: itemstatus/{item}/{location}
+          method: get
+          cors: true
+      - http:
+          path: updatestatus/{item}/{store}/{status}
+          method: put
           cors: true 
