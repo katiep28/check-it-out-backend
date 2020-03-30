@@ -6,22 +6,19 @@ provider:
   region: eu-west-2
 
 functions:
-  checkitout:
-    handler: handler.checkitout
+  items:
+    handler: handler.items
     environment:
       DB_HOST: ${opt:DB_HOST}
       DB_USER: ${opt:DB_USER}
       DB_PASSWORD: ${opt:DB_PASSWORD}
     events:
       - http:
+          path: tasks
+          method: get
+          cors: true
+      - http:
           path: itemname
           method: get
           cors: true
-      - http:
-          path: itemstatus/{item}/{location}
-          method: get
-          cors: true
-      - http:
-          path: updatestatus/{item}/{store}/{status}
-          method: put
-          cors: true 
+

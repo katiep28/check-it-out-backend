@@ -1,7 +1,6 @@
 {
   "name": "check-it-out-backend",
   "version": "1.0.0",
-  "description": "",
   "main": "handler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,6 +13,17 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mysql": "^2.18.1",
-    "serverless-http": "^2.3.0"
-  }
+    "serverless": "^1.67.0",
+    "serverless-http": "^2.3.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katiep28/check-it-out-backend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/katiep28/check-it-out-backend/issues"
+  },
+  "homepage": "https://github.com/katiep28/check-it-out-backend#readme",
+  "description": ""
 }
