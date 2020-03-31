@@ -21,4 +21,11 @@ functions:
           path: itemname
           method: get
           cors: true
-
+      - http:
+          path: itemstatus/{itemid}/{postcode}
+          method: get
+          cors: true
+      - http:
+          path: updatequantity/{postcode}/{storeid}/{itemid}/{quantity}
+          method: put
+          cors: true

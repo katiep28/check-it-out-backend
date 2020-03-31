@@ -4,9 +4,7 @@ const cors = require("cors");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 
-
 const app = express();
-
 
 const connection = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -39,34 +37,61 @@ app.get("/itemname", function(req, res) {
     });
   });
   
-// app.get("/itemstatus/:itemid/:location", function(req, res) {
+app.get("/itemstatus/:itemid/:postcode", function(req, res) {
 
-// const itemid = req.params.itemid;
-// const location = req.params.location;
+const itemid = req.params.itemid;
+const postcode = req.params.postcode;
 
-// connection.query("SELECT store.name, " +
-//                           "item_store_location.quantity, " +
-//                           "item_store_location.dateupdated " +
-//                    "FROM item_store_location " + 
-//                    "INNER JOIN store ON item_store_location.storeid=store.id " +
-//                    "WHERE item_store_location.itemid = ? " +
-//                    "AND item_store_location.postcode= ? ",
-//                 [itemid, location],
-//                 function(err, data) {
-//                   if (err) {
-//                       console.log("Error fetching item status", err);
-//                       res.status(500).json({
-//                         error: err
-//                       }); 
-//                   }
-//                   else {
-//                       res.json({
-//                         itemData: data
-//                       });
-//                   }
-//                   });
-//           });
+connection.query("SELECT store.name, " +
+                          "item_store_location.quantity, " +
+                          "DATE_FORMAT(item_store_location.dateupdated,\"%d %M %H:%i\") AS dateformatted " +
+                   "FROM item_store_location " + 
+                   "INNER JOIN store ON item_store_location.storeid=store.id " +
+                   "WHERE item_store_location.itemid = ? " +
+                   "AND item_store_location.postcode= ?",
+                [itemid, postcode],
+                function(err, data) {
+                  if (err) {
+                      console.log("Error fetching item status", err);
+                      res.status(500).json({
+                        error: err
+                      }); 
+                  }
+                  else {
+                      res.json({
+                        itemData: data
+                      });
+                  }
+                  });
+          });
 
+app.put("/updatequantity/:postcode/:storeid/:itemid/:quantity", function (request, response) {
+  // Update task here
+  const postcode = request.params.postcode;
+  const storeid = request.params.storeid;
+  const itemid  = request.params.itemid;
+  const quantity = request.params.quantity;
+  
+  connection.query("UPDATE item_store_location " +
+                   "SET quantity = ? " +
+                   ", dateupdated = CURRENT_TIMESTAMP " +
+                   "WHERE postcode = ? " +
+                   "AND storeid = ? " +
+                   "AND itemid = ? ", 
+                  [quantity,postcode,storeid,itemid], 
+                  function (err, data) {
+    if (err) {
+      console.log("Error updateing status", err);
+      response.status(500).json({
+        error: err
+      });
+    } else {
+      console.log("Update worked");
+      response.status(200).send("Updated status " + itemid);
+    };
+  });
+
+});
 
 
 module.exports.items = serverless(app);

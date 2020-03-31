@@ -21,7 +21,8 @@ FOREIGN KEY (storeid) REFERENCES store(id)
                             storeid VARCHAR(36),
                             postcode VARCHAR(10),
                             quantity  VARCHAR(1),
-                            dateupdated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,                        
+                            dateupdated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                        ON UPDATE CURRENT_TIMESTAMP,                        
 PRIMARY KEY (id),
 FOREIGN KEY (postcode) REFERENCES location(postcode),
 FOREIGN KEY (itemid) REFERENCES item(id),
@@ -107,4 +108,16 @@ FROM item_store_location
 INNER JOIN store ON item_store_location.storeid=store.id
 WHERE item_store_location.itemid = "1" AND item_store_location.postcode="M33";
 
+UPDATE item_store_location
+SET quantity = "N",
+    dateupdated = CURRENT_TIMESTAMP
+WHERE postcode = "M33"
+AND storeid = "7"
+AND itemid = "2";
 
+SELECT
+  CONVERT_TZ('2019-04-01 00:00:00','Europe/London','UTC') AS time1,
+
+  SELECT
+  CONVERT_TZ(CURRENT_TIMESTAMP,'GMT','+01:00') AS time1,
+  CONVERT_TZ(CURRENT_TIMESTAMP,'GMT','+00:00') AS time2;
