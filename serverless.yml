@@ -26,6 +26,6 @@ functions:
           method: get
           cors: true
       - http:
-          path: updatequantity/{postcode}/{storeid}/{itemid}/{quantity}
+          path: updatequantity/{postcode}/{storeid}/{itemid}/{quantity}/{date}
           method: put
           cors: true

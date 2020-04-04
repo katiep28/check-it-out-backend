@@ -16,13 +16,9 @@ const connection = mysql.createConnection({
 app.use(cors());
 app.use(bodyParser.json());
 
-app.get("/tasks", function(req, res) {
-  res.send({ tasks: ["water plants", "do dishes", "buy oats"] });
-});
-
 app.get("/itemname", function(req, res) {
  
-    connection.query("SELECT name FROM item ",
+    connection.query("SELECT name, id FROM item ",
                     function(err, data) {
       if (err) {
         console.log("Error fetching items", err);
@@ -42,13 +38,14 @@ app.get("/itemstatus/:itemid/:postcode", function(req, res) {
 const itemid = req.params.itemid;
 const postcode = req.params.postcode;
 
-connection.query("SELECT store.name, " +
+connection.query("SELECT store.name, store.id, " +
                           "item_store_location.quantity, " +
-                          "DATE_FORMAT(item_store_location.dateupdated,\"%d %M %H:%i\") AS dateformatted " +
+                          "DATE_FORMAT(item_store_location.dateupdated,\"%d %b %H:%i\") AS dateformatted " +
                    "FROM item_store_location " + 
                    "INNER JOIN store ON item_store_location.storeid=store.id " +
                    "WHERE item_store_location.itemid = ? " +
-                   "AND item_store_location.postcode= ?",
+                   "AND item_store_location.postcode= ?" +
+                   "ORDER BY store.name",
                 [itemid, postcode],
                 function(err, data) {
                   if (err) {
@@ -65,20 +62,21 @@ connection.query("SELECT store.name, " +
                   });
           });
 
-app.put("/updatequantity/:postcode/:storeid/:itemid/:quantity", function (request, response) {
+app.put("/updatequantity/:postcode/:storeid/:itemid/:quantity/:date", function (request, response) {
   // Update task here
   const postcode = request.params.postcode;
   const storeid = request.params.storeid;
   const itemid  = request.params.itemid;
   const quantity = request.params.quantity;
+  const date = request.params.date;
   
   connection.query("UPDATE item_store_location " +
                    "SET quantity = ? " +
-                   ", dateupdated = CURRENT_TIMESTAMP " +
+                   ", dateupdated = ? " +
                    "WHERE postcode = ? " +
                    "AND storeid = ? " +
                    "AND itemid = ? ", 
-                  [quantity,postcode,storeid,itemid], 
+                  [quantity,date, postcode,storeid,itemid], 
                   function (err, data) {
     if (err) {
       console.log("Error updateing status", err);

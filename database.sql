@@ -21,8 +21,7 @@ FOREIGN KEY (storeid) REFERENCES store(id)
                             storeid VARCHAR(36),
                             postcode VARCHAR(10),
                             quantity  VARCHAR(1),
-                            dateupdated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-                                        ON UPDATE CURRENT_TIMESTAMP,                        
+                            dateupdated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,       
 PRIMARY KEY (id),
 FOREIGN KEY (postcode) REFERENCES location(postcode),
 FOREIGN KEY (itemid) REFERENCES item(id),
